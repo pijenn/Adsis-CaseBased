@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: ujian_web
+    ports:
+      - "8080:80"
+    volumes:
+      - ../webapp:/var/www/html
+    networks:
+      - ujian_net
+
+  db:
+    image: mysql:5.7
+    container_name: ujian_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ujian
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin123
+    volumes:
+      - db:/var/lib/mysql
+      - ./db_init:/docker-entrypoint-initdb.d
+    networks:
+      - ujian_net
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: ujian_phpmyadmin
+    ports:
+      - 8081:80
+    environment:
+      PMA_HOST: db
+      PMA_USER: admin
+      PMA_PASSWORD: admin123
+    networks:
+      - ujian_net
+
+networks:
+  ujian_net:
+
+volumes:
+  db:
