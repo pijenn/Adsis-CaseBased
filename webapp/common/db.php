@@ -1,9 +1,10 @@
 <?php
-$host = 'db';
+$host = 'localhost';
 $db   = 'ujian';
-$user = 'admin';
-$pass = 'admin123';
+$user = 'root';
+$pass = '';
 $charset = 'utf8mb4';
+date_default_timezone_set('Asia/Jakarta');
 
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
 $options = [
