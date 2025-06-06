@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beri Nilai Esai - Exam Platform</title>
+    <title>Beri Nilai Esai</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="sidebar w-64 h-full p-6 fixed">
         <div class="flex items-center mb-8">
             <i class="fas fa-book-open text-2xl text-blue-600 mr-2"></i>
-            <h1 class="text-xl font-bold text-blue-800">Exam Platform</h1>
+            <h1 class="text-xl font-bold text-blue-800">Website Ujian</h1>
         </div>
         <nav>
             <h2 class="text-sm font-semibold text-blue-700 mb-4">Menu Admin</h2>
@@ -121,10 +121,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <!-- Header -->
         <div class="header flex justify-between items-center p-4">
             <h1 class="text-2xl font-semibold text-gray-800">Beri Nilai Esai</h1>
-            <div class="flex items-center space-x-4">
-                <span class="text-gray-600">Selamat datang, <span class="font-medium"><?= $_SESSION['username'] ?></span></span>
-                <span class="text-gray-600">Role: <span class="font-medium"><?= ucfirst($_SESSION['role']) ?></span></span>
+        <div class="flex items-center space-x-4 bg-blue-50 border border-blue-100 p-4 rounded-lg shadow-sm ml-6">
+            <div class="flex items-center text-blue-700 font-semibold">
+                <i class="fas fa-user-circle text-lg mr-2"></i>
+                <span>Selamat datang, <span class="text-blue-900 font-bold"><?= htmlspecialchars($_SESSION['username']) ?></span></span>
             </div>
+            <div class="flex items-center text-green-700 font-semibold">
+                <i class="fas fa-id-badge text-lg mr-2"></i>
+                <span>Role: <span class="text-green-900 font-bold"><?= strtoupper($_SESSION['role']) ?></span></span>
+            </div>
+        </div>
         </div>
 
         <!-- Main Content Area -->

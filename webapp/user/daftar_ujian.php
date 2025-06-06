@@ -5,6 +5,8 @@ require_once '../includes/functions.php';
 
 if (!is_logged_in()) redirect('../index.php');
 
+$user_id = $_SESSION['user_id'];
+
 // Ambil semua ujian
 $now = date('Y-m-d H:i:s');
 $stmt = $pdo->query("SELECT * FROM exams");
@@ -16,6 +18,16 @@ $upcoming_exams = [];
 $closed_exams = [];
 
 foreach ($exams as $exam) {
+    // Cek apakah user sudah mengerjakan ujian ini
+    $stmt = $pdo->prepare("
+        SELECT COUNT(*) as answer_count 
+        FROM answers a
+        JOIN questions q ON a.question_id = q.id
+        WHERE a.user_id = ? AND q.exam_id = ?
+    ");
+    $stmt->execute([$user_id, $exam['id']]);
+    $exam['has_taken'] = $stmt->fetch()['answer_count'] > 0;
+
     if ($now >= $exam['start_time'] && $now <= $exam['end_time']) {
         $current_exams[] = $exam;
     } elseif ($now < $exam['start_time']) {
@@ -66,7 +78,7 @@ foreach ($exams as $exam) {
     <div class="sidebar w-64 h-full p-6 fixed">
         <div class="flex items-center mb-8">
             <i class="fas fa-book-open text-2xl text-blue-600 mr-2"></i>
-            <h1 class="text-xl font-bold text-blue-800">Ujian FILKOM</h1>
+            <h1 class="text-xl font-bold text-blue-800">Website Ujian</h1>
         </div>
         <nav>
             <h2 class="text-sm font-semibold text-blue-700 mb-4">Menu Peserta</h2>
@@ -96,31 +108,52 @@ foreach ($exams as $exam) {
         <!-- Header -->
         <div class="header flex justify-between items-center p-4">
             <h1 class="text-2xl font-semibold text-gray-800">Daftar Ujian</h1>
-            <div class="flex items-center space-x-4">
-                <span class="text-gray-600">Selamat datang, <span class="font-medium"><?= $_SESSION['username'] ?></span></span>
-                <span class="text-gray-600">Role: <span class="font-medium"><?= ucfirst($_SESSION['role']) ?></span></span>
+            <div class="flex items-center space-x-4 bg-blue-50 border border-blue-100 p-4 rounded-lg shadow-sm ml-6">
+                <div class="flex items-center text-blue-700 font-semibold">
+                    <i class="fas fa-user-circle text-lg mr-2"></i>
+                    <span>Selamat datang, <span class="text-blue-900 font-bold"><?= htmlspecialchars($_SESSION['username']) ?></span></span>
+                </div>
             </div>
         </div>
 
         <!-- Main Content Area -->
         <div class="main-content p-6">
+            <?php if (isset($_SESSION['success'])): ?>
+                <div class="mb-4 p-3 bg-green-100 text-green-700 rounded-lg">
+                    <?= $_SESSION['success'] ?>
+                    <?php unset($_SESSION['success']); ?>
+                </div>
+            <?php endif; ?>
+            <?php if (isset($_SESSION['error'])): ?>
+                <div class="mb-4 p-3 bg-red-100 text-red-700 rounded-lg">
+                    <?= $_SESSION['error'] ?>
+                    <?php unset($_SESSION['error']); ?>
+                </div>
+            <?php endif; ?>
+
             <!-- Current Exams -->
             <?php if (count($current_exams) > 0): ?>
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">Ujian Saat Ini</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
                     <?php foreach ($current_exams as $exam): ?>
                         <div class="exam-card bg-white rounded-lg shadow p-6 border border-gray-100">
-                            <h3 class="text-lg font-semibold text-gray-800 mb-2"><?= $exam['title'] ?></h3>
-                            <p class="text-gray-600 mb-3"><?= $exam['description'] ?></p>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2"><?= htmlspecialchars($exam['title']) ?></h3>
+                            <p class="text-gray-600 mb-3"><?= htmlspecialchars($exam['description']) ?></p>
                             <p class="text-sm text-gray-500 mb-4">
                                 <i class="fas fa-clock mr-1"></i> 
                                 <?= date('d M Y H:i', strtotime($exam['start_time'])) ?> - 
                                 <?= date('d M Y H:i', strtotime($exam['end_time'])) ?>
                             </p>
-                            <a href="kerjakan_ujian.php?exam_id=<?= $exam['id'] ?>" 
-                               class="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-                                Kerjakan
-                            </a>
+                            <?php if ($exam['has_taken']): ?>
+                                <span class="inline-block px-4 py-2 bg-gray-400 text-white rounded-lg cursor-not-allowed">
+                                    Sudah Dikerjakan
+                                </span>
+                            <?php else: ?>
+                                <a href="kerjakan_ujian.php?exam_id=<?= $exam['id'] ?>" 
+                                   class="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                                    Kerjakan
+                                </a>
+                            <?php endif; ?>
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -132,8 +165,8 @@ foreach ($exams as $exam) {
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
                     <?php foreach ($upcoming_exams as $exam): ?>
                         <div class="exam-card bg-white rounded-lg shadow p-6 border border-gray-100">
-                            <h3 class="text-lg font-semibold text-gray-800 mb-2"><?= $exam['title'] ?></h3>
-                            <p class="text-gray-600 mb-3"><?= $exam['description'] ?></p>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2"><?= htmlspecialchars($exam['title']) ?></h3>
+                            <p class="text-gray-600 mb-3"><?= htmlspecialchars($exam['description']) ?></p>
                             <p class="text-sm text-gray-500 mb-4">
                                 <i class="fas fa-clock mr-1"></i> 
                                 <?= date('d M Y H:i', strtotime($exam['start_time'])) ?> - 
@@ -151,8 +184,8 @@ foreach ($exams as $exam) {
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <?php foreach ($closed_exams as $exam): ?>
                         <div class="exam-card bg-white rounded-lg shadow p-6 border border-gray-100">
-                            <h3 class="text-lg font-semibold text-gray-800 mb-2"><?= $exam['title'] ?></h3>
-                            <p class="text-gray-600 mb-3"><?= $exam['description'] ?></p>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2"><?= htmlspecialchars($exam['title']) ?></h3>
+                            <p class="text-gray-600 mb-3"><?= htmlspecialchars($exam['description']) ?></p>
                             <p class="text-sm text-gray-500 mb-4">
                                 <i class="fas fa-clock mr-1"></i> 
                                 <?= date('d M Y H:i', strtotime($exam['start_time'])) ?> - 

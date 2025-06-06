@@ -99,10 +99,16 @@ $answers = $stmt->fetchAll();
         <!-- Header -->
         <div class="header flex justify-between items-center p-4">
             <h1 class="text-2xl font-semibold text-gray-800">Jawaban Esai Belum Dinilai</h1>
-            <div class="flex items-center space-x-4">
-                <span class="text-gray-600">Selamat datang, <span class="font-medium"><?= $_SESSION['username'] ?></span></span>
-                <span class="text-gray-600">Role: <span class="font-medium"><?= ucfirst($_SESSION['role']) ?></span></span>
+        <div class="flex items-center space-x-4 bg-blue-50 border border-blue-100 p-4 rounded-lg shadow-sm ml-6">
+            <div class="flex items-center text-blue-700 font-semibold">
+                <i class="fas fa-user-circle text-lg mr-2"></i>
+                <span>Selamat datang, <span class="text-blue-900 font-bold"><?= htmlspecialchars($_SESSION['username']) ?></span></span>
             </div>
+            <div class="flex items-center text-green-700 font-semibold">
+                <i class="fas fa-id-badge text-lg mr-2"></i>
+                <span>Role: <span class="text-green-900 font-bold"><?= strtoupper($_SESSION['role']) ?></span></span>
+            </div>
+        </div>
         </div>
 
         <!-- Main Content Area -->
