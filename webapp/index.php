@@ -89,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="absolute -top-20 -right-20 w-80 h-80 bg-blue-600/20 rounded-full animate-pulse animation-delay-2000"></div>
 
     <div class="form-container p-8 md:p-12 rounded-3xl shadow-2xl w-full max-w-md z-10">
-        <h1 class="text-4xl font-bold text-center mb-10 text-slate-100">Login CBT</h1>
+        <h1 class="text-4xl font-bold text-center mb-10 text-slate-100">Login Ujian</h1>
 
         <?php if (isset($error) && $error): ?>
             <div class="error-banner p-3 rounded-lg mb-6 text-center">

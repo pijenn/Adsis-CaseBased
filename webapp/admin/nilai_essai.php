@@ -69,6 +69,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .main-content {
             background-color: #f9fafb;
         }
+        .text-container {
+            max-height: 200px;
+            overflow-y: auto;
+            line-height: 1.6;
+        }
+        @media (max-width: 640px) {
+            .text-container {
+                max-height: 150px;
+            }
+        }
     </style>
 </head>
 <body class="flex h-screen">
@@ -121,16 +131,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <!-- Header -->
         <div class="header flex justify-between items-center p-4">
             <h1 class="text-2xl font-semibold text-gray-800">Beri Nilai Esai</h1>
-        <div class="flex items-center space-x-4 bg-blue-50 border border-blue-100 p-4 rounded-lg shadow-sm ml-6">
-            <div class="flex items-center text-blue-700 font-semibold">
-                <i class="fas fa-user-circle text-lg mr-2"></i>
-                <span>Selamat datang, <span class="text-blue-900 font-bold"><?= htmlspecialchars($_SESSION['username']) ?></span></span>
+            <div class="flex items-center space-x-4 bg-blue-50 border border-blue-100 p-4 rounded-lg shadow-sm ml-6">
+                <div class="flex items-center text-blue-700 font-semibold">
+                    <i class="fas fa-user-circle text-lg mr-2"></i>
+                    <span>Selamat datang, <span class="text-blue-900 font-bold"><?= htmlspecialchars($_SESSION['username']) ?></span></span>
+                </div>
+                <div class="flex items-center text-green-700 font-semibold">
+                    <i class="fas fa-id-badge text-lg mr-2"></i>
+                    <span>Role: <span class="text-green-900 font-bold"><?= strtoupper($_SESSION['role']) ?></span></span>
+                </div>
             </div>
-            <div class="flex items-center text-green-700 font-semibold">
-                <i class="fas fa-id-badge text-lg mr-2"></i>
-                <span>Role: <span class="text-green-900 font-bold"><?= strtoupper($_SESSION['role']) ?></span></span>
-            </div>
-        </div>
         </div>
 
         <!-- Main Content Area -->
@@ -147,16 +157,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 <div class="mb-4">
                     <h4 class="text-sm font-semibold text-gray-600 mb-1">Soal:</h4>
-                    <p class="text-gray-700 whitespace-pre-wrap bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <div class="text-container text-gray-700 bg-gray-50 p-4 rounded-lg border border-gray-200">
                         <?= nl2br(htmlspecialchars($answer['question_text'])) ?>
-                    </p>
+                    </div>
                 </div>
 
                 <div class="mb-6">
                     <h4 class="text-sm font-semibold text-gray-600 mb-1">Jawaban:</h4>
-                    <p class="text-gray-700 whitespace-pre-wrap bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <div class="text-container text-gray-700 bg-gray-50 p-4 rounded-lg border border-gray-200">
                         <?= nl2br(htmlspecialchars($answer['answer_text'])) ?>
-                    </p>
+                    </div>
                 </div>
 
                 <form method="POST" class="space-y-4">
